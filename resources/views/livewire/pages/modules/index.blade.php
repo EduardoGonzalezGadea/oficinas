@@ -3,7 +3,8 @@
 use function Livewire\Volt\layout;
 use function Livewire\Volt\state;
 
-// Usamos el layout principal de la aplicación
+// CAMBIO: La ruta al layout ahora es 'layouts.app'
+// en lugar de 'components.layouts.app'
 layout('layouts.app');
 
 // Definimos las propiedades que la vista recibirá desde la ruta
