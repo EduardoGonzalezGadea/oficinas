@@ -13,7 +13,7 @@ use Livewire\Form;
 class LoginForm extends Form
 {
     #[Validate('required|string')]
-    public string $username = '';
+    public string $username = ''; // CORRECTO: Propiedad es 'username'
 
     #[Validate('required|string')]
     public string $password = '';
@@ -30,12 +30,17 @@ class LoginForm extends Form
     {
         $this->ensureIsNotRateLimited();
 
-        $credentials = ['username' => $this->username, 'password' => $this->password];
+        // CAMBIO CLAVE: Usamos 'username' en las credenciales
+        $credentials = [
+            'username' => $this->username,
+            'password' => $this->password
+        ];
 
         if (! Auth::attempt($credentials, $this->remember)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
+                // CAMBIO CLAVE: El error se asocia a 'form.username'
                 'form.username' => trans('auth.failed'),
             ]);
         }
@@ -57,6 +62,7 @@ class LoginForm extends Form
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
+            // CAMBIO CLAVE: El error de throttle se asocia a 'form.username'
             'form.username' => trans('auth.throttle', [
                 'seconds' => $seconds,
                 'minutes' => ceil($seconds / 60),
@@ -69,6 +75,7 @@ class LoginForm extends Form
      */
     protected function throttleKey(): string
     {
+        // CAMBIO CLAVE: Usamos 'username' para la clave
         return Str::transliterate(Str::lower($this->username) . '|' . request()->ip());
     }
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" 
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
       x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }"
       x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))"
       x-bind:class="{ 'dark': darkMode }">
@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Oficinas') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -34,13 +34,15 @@
 
                         <!-- Enlaces de Módulos (Dinámicos y con Permisos) -->
                         <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                            @foreach (config('modules', []) as $key => $details)
-                                @can('ver-modulo-'.$key)
-                                    <x-nav-link :href="route($key.'.index')" :active="request()->routeIs($key.'.*')">
-                                        {{ $details['display_name'] ?? $details['name'] }}
-                                    </x-nav-link>
-                                @endcan
-                            @endforeach
+                            @auth
+                                @foreach (config('modules', []) as $key => $details)
+                                    @can('ver-modulo-'.$key)
+                                        <x-nav-link :href="route($key.'.index')" :active="request()->routeIs($key.'.*')">
+                                            {{ $details['display_name'] ?? $details['name'] }}
+                                        </x-nav-link>
+                                    @endcan
+                                @endforeach
+                            @endauth
                         </div>
                     </div>
 
@@ -56,32 +58,42 @@
                             </svg>
                         </button>
 
-                        <!-- Dropdown de Usuario -->
-                        <x-dropdown align="right" width="48">
-                            <x-slot name="trigger">
-                                <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
-                                    <div>{{ Auth::user()->name }}</div>
-                                    <div class="ms-1">
-                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-                                </button>
-                            </x-slot>
+                        <!-- Menú de Usuario Condicional -->
+                        @auth
+                            <!-- Si el usuario ESTÁ autenticado, muestra el dropdown -->
+                            <x-dropdown align="right" width="48">
+                                <x-slot name="trigger">
+                                    <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
+                                        <div>{{ Auth::user()->name }}</div>
+                                        <div class="ms-1">
+                                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                    </button>
+                                </x-slot>
 
-                            <x-slot name="content">
-                                <x-dropdown-link :href="route('profile')" wire:navigate>
-                                    Mi Perfil
-                                </x-dropdown-link>
-
-                                <!-- Authentication -->
-                                <button wire:click="logout" class="w-full text-start">
-                                    <x-dropdown-link>
-                                        Cerrar Sesión
+                                <x-slot name="content">
+                                    <x-dropdown-link :href="route('profile')" wire:navigate>
+                                        Mi Perfil
                                     </x-dropdown-link>
-                                </button>
-                            </x-slot>
-                        </x-dropdown>
+
+                                    <!-- Authentication -->
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <x-dropdown-link :href="route('logout')"
+                                                onclick="event.preventDefault();
+                                                            this.closest('form').submit();">
+                                            Cerrar Sesión
+                                        </x-dropdown-link>
+                                    </form>
+                                </x-slot>
+                            </x-dropdown>
+                        @else
+                            <!-- Si el usuario NO ESTÁ autenticado, muestra el enlace de login -->
+                            <a href="{{ route('login') }}" class="ms-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500" wire:navigate>Ingresar</a>
+                        @endauth
+
                     </div>
                 </div>
             </div>
