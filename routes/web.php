@@ -4,36 +4,35 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome');
 
-// Rutas protegidas
-Route::middleware('auth')->group(function () {
-    Route::get('panel', function () {
-        return view('dashboard');
-    })->name('dashboard');
+// Agrupamos todas las rutas que requieren autenticación
+Route::middleware(['auth'])->group(function () {
 
-    Route::view('profile', 'profile')
-        ->middleware(['auth'])
+    // Rutas principales traducidas
+    Route::view('panel', 'dashboard')
+        ->name('dashboard');
+
+    Route::view('perfil', 'profile')
         ->name('profile');
 
-    // Aquí irán las rutas de los módulos
-    Route::prefix('jefatura')->name('jefatura.')->group(function () {
-        Route::get('/', function () {
-            return view('modules.jefatura.index');
-        })->name('index');
-    });
+    // Generación dinámica de rutas de módulos
+    $modules = config('modules', []);
 
-    Route::prefix('tesoreria')->name('tesoreria.')->group(function () {
-        Route::get('/', function () {
-            return view('modules.tesoreria.index');
-        })->name('index');
-    });
+    foreach ($modules as $key => $details) {
+        Route::prefix($key)->name("$key.")->group(function () use ($key, $details) {
 
-    Route::prefix('dca')->name('dca.')->group(function () {
-        Route::get('/', function () {
-            return view('modules.dca.index');
-        })->name('index');
-    });
+            // Cada módulo tendrá una vista de bienvenida/índice
+            // Protegida por el permiso correspondiente
+            Route::get('/', function () use ($key, $details) {
+                // Aquí necesitarás crear esta vista, ej: /resources/views/pages/modules/index.blade.php
+                return view('pages.modules.index', [
+                    'module_name' => $details['display_name'] ?? $details['name']
+                ]);
+            })->middleware(['permission:ver-modulo-' . $key])->name('index');
 
-    // ... etc para los demás módulos
+            // Aquí podrás añadir más rutas para cada módulo en el futuro
+            // ej: Route::get('/reportes', ...)->name('reports');
+        });
+    }
 });
 
 require __DIR__ . '/auth.php';

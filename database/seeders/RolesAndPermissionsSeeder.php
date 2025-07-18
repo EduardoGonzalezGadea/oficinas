@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash; // Usar Hash facade es más limpio
 
 class RolesAndPermissionsSeeder extends Seeder
 {
@@ -14,46 +15,47 @@ class RolesAndPermissionsSeeder extends Seeder
         // Limpiar caché de permisos
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // --- PERMISOS ---
-        // Permiso de Administración Total
+        // --- PERMISOS GLOBALES ---
         Permission::create(['name' => 'acceso-total']);
-
-        // Permisos de Gestión de Usuarios
         Permission::create(['name' => 'gestionar-roles-global']);
         Permission::create(['name' => 'crear-usuarios']);
 
-        // Permisos por Módulo (ejemplo con Jefatura y DCA)
-        $modulos = ['Jefatura', 'DCA', 'Tesorería', 'Contabilidad', 'Art. 222', 'Asesoría Contable'];
-        foreach ($modulos as $modulo) {
-            Permission::create(['name' => "ver-modulo-$modulo"]);
-            Permission::create(['name' => "gestionar-usuarios-modulo-$modulo"]);
-        }
+        // --- ROLES Y PERMISOS DE MÓDULOS (AHORA DINÁMICOS) ---
+        $modulos = config('modules', []); // Leemos desde nuestro nuevo archivo de config
 
-        // --- ROLES ---
-        // Rol de Administrador
-        $adminRole = Role::create(['name' => 'ADMINISTRADOR']);
-        $adminRole->givePermissionTo('acceso-total');
+        foreach ($modulos as $key => $details) {
+            $moduleName = $details['display_name'] ?? $details['name'];
 
-        // Roles de Módulos
-        foreach ($modulos as $modulo) {
+            // Permisos por Módulo
+            Permission::create(['name' => "ver-modulo-$key"]);
+            Permission::create(['name' => "gestionar-usuarios-modulo-$key"]);
+
             // Rol Supervisor
-            $supervisorRole = Role::create(['name' => "Supervisor $modulo"]);
-            $supervisorRole->givePermissionTo("ver-modulo-$modulo");
-            $supervisorRole->givePermissionTo("gestionar-usuarios-modulo-$modulo");
-            $supervisorRole->givePermissionTo('crear-usuarios');
+            $supervisorRole = Role::create(['name' => "Supervisor $moduleName"]);
+            $supervisorRole->givePermissionTo([
+                "ver-modulo-$key",
+                "gestionar-usuarios-modulo-$key",
+                'crear-usuarios',
+            ]);
 
             // Rol Usuario
-            $userRole = Role::create(['name' => "Usuario $modulo"]);
-            $userRole->givePermissionTo("ver-modulo-$modulo");
+            $userRole = Role::create(['name' => "Usuario $moduleName"]);
+            $userRole->givePermissionTo("ver-modulo-$key");
         }
 
+        // --- ROL DE ADMINISTRADOR ---
+        $adminRole = Role::create(['name' => 'ADMINISTRADOR']);
+        $adminRole->givePermissionTo(Permission::all()); // El admin puede hacer todo
+
         // --- USUARIO ADMINISTRADOR ---
-        $adminUser = User::factory()->create([
-            'name' => 'Administrador General',
-            'username' => 'admin',
-            'email' => 'admin@oficinas.com.uy',
-            'password' => bcrypt('12345678'), // ¡Cambiar en producción!
-        ]);
-        $adminUser->assignRole($adminRole);
+        if (!User::where('username', 'admin')->exists()) {
+            $adminUser = User::factory()->create([
+                'name' => 'Administrador General',
+                'username' => 'admin',
+                'email' => 'admin@oficinas.com.uy',
+                'password' => Hash::make('password'), // ¡Cambiar en producción!
+            ]);
+            $adminUser->assignRole($adminRole);
+        }
     }
 }
