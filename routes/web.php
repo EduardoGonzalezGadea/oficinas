@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Livewire\Volt\Volt;
 
 Route::view('/', 'welcome');
 
@@ -34,5 +35,8 @@ Route::middleware(['auth'])->group(function () {
         });
     }
 });
+
+// RUTA DE PRUEBA
+Volt::route('/test-contador', 'pages.test-contador');
 
 require __DIR__ . '/auth.php';

@@ -6,13 +6,11 @@ use Illuminate\Support\Facades\Session;
 use function Livewire\Volt\form;
 use function Livewire\Volt\layout;
 
-layout('layouts.app');
+layout('layouts.guest');
 
 form(LoginForm::class);
 
 $login = function () {
-    dd('La función de login en el componente Volt FUE LLAMADA.');
-    
     $this->validate();
 
     $this->form->authenticate();
