@@ -1,4 +1,17 @@
-<x-app-layout>
+<?php
+
+use function Livewire\Volt\layout;
+use function Livewire\Volt\state;
+
+// Usamos el layout principal de la aplicación
+layout('layouts.app');
+
+// Definimos las propiedades que la vista recibirá desde la ruta
+state(['module_name']);
+
+?>
+
+<div>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             Módulo de {{ $module_name }}
@@ -14,4 +27,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+</div>
