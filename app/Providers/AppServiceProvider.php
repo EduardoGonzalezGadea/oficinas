@@ -1,9 +1,7 @@
 <?php
-
 namespace App\Providers;
-
-use Illuminate\Support\ServiceProvider;
 use Livewire\Volt\Volt;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,7 +12,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // Escanea TODOS los directorios de vistas en busca de componentes.
+        // Esto le dice a Volt que busque los archivos de página
+        // en la raíz de 'views'.
         Volt::mount(resource_path('views'));
     }
 }
