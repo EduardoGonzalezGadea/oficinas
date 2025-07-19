@@ -1,15 +1,8 @@
 <?php
-
 use function Livewire\Volt\layout;
 use function Livewire\Volt\state;
-
-// CAMBIO: La ruta al layout ahora es 'layouts.app'
-// en lugar de 'components.layouts.app'
 layout('layouts.app');
-
-// Definimos las propiedades que la vista recibirá desde la ruta
 state(['module_name']);
-
 ?>
 
 <div>
@@ -18,7 +11,6 @@ state(['module_name']);
             Módulo de {{ $module_name }}
         </h2>
     </x-slot>
-
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">

@@ -1,10 +1,6 @@
 <?php
-
 use function Livewire\Volt\layout;
-
-// Usamos el layout principal de la aplicación
 layout('layouts.app');
-
 ?>
 
 <x-slot name="header">
@@ -17,7 +13,7 @@ layout('layouts.app');
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6 text-gray-900 dark:text-gray-100">
-                ¡Has iniciado sesión!
+                ¡Bienvenido a Oficinas! Has iniciado sesión.
             </div>
         </div>
     </div>
