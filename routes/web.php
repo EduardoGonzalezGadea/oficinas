@@ -1,11 +1,16 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
 Route::view('/', 'welcome');
 
 Route::middleware(['auth'])->group(function () {
+    Route::resource('usuarios', UserController::class)->parameters([
+        'usuarios' => 'user'
+    ]);
+    
     Volt::route('panel', 'panel-principal')->name('panel');
     Volt::route('perfil', 'profile')->name('profile');
 
