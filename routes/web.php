@@ -9,21 +9,19 @@ use Livewire\Volt\Volt;
 |--------------------------------------------------------------------------
 */
 
+// La página de bienvenida puede ser una vista de Blade normal
 Route::view('/', 'welcome');
 
 Route::middleware(['auth'])->group(function () {
 
-    // CAMBIO: Definimos la ruta del panel como un componente de Volt
-    Volt::route('panel', 'dashboard')
-        ->name('dashboard');
+    // Ahora Volt encontrará 'dashboard' en livewire/pages/dashboard.blade.php
+    Volt::route('panel', 'dashboard')->name('dashboard');
 
-    // La ruta del perfil también debería ser un componente de Volt
-    Volt::route('perfil', 'profile')
-        ->name('profile');
+    // Ahora Volt encontrará 'profile' en livewire/pages/profile.blade.php
+    Volt::route('perfil', 'profile')->name('profile');
 
-    // Generación dinámica de rutas de módulos (esto ya estaba bien)
+    // La lógica de los módulos ya era correcta para esta estructura
     $modules = config('modules', []);
-
     foreach ($modules as $key => $details) {
         Volt::route($key, 'modules.index')
             ->name("{$key}.index")

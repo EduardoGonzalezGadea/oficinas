@@ -20,12 +20,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // CAMBIO: Añadir esta configuración para Volt
-        // Esto le dice a Volt que busque componentes de página no solo en
-        // 'resources/views/livewire/pages' sino también en 'resources/views/pages'.
-        Volt::mount([
-            resource_path('views/livewire/pages'),
-            resource_path('views/pages'), // <-- Esta línea soluciona el problema
-        ]);
+        //
     }
 }
