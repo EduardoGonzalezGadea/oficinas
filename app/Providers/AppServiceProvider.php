@@ -14,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // Le decimos a Volt que busque componentes en la raíz de 'views' ADEMÁS de en 'livewire/pages'
+        // Escanea TODOS los directorios de vistas en busca de componentes.
         Volt::mount(resource_path('views'));
     }
 }

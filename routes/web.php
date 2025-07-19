@@ -6,16 +6,16 @@ use Livewire\Volt\Volt;
 Route::view('/', 'welcome');
 
 Route::middleware(['auth'])->group(function () {
-    // CAMBIO: Apuntamos la ruta '/panel' al nuevo componente 'panel-principal'.
-    // Mantenemos el nombre de la ruta como 'dashboard' para que las redirecciones sigan funcionando.
+    // Esto ya funciona. Llama a 'panel-principal'.
     Volt::route('panel', 'panel-principal')->name('dashboard');
 
-    // Las otras rutas se quedan como están.
+    // CAMBIO: Apuntamos la ruta '/perfil' al componente 'profile'.
     Volt::route('perfil', 'profile')->name('profile');
 
+    // CAMBIO: Apuntamos las rutas de módulos al componente 'modules-index'.
     $modules = config('modules', []);
     foreach ($modules as $key => $details) {
-        Volt::route($key, 'modules.index')
+        Volt::route($key, 'modules-index') // Apuntamos al nuevo archivo
             ->name("{$key}.index")
             ->middleware(['permission:ver-modulo-' . $key])
             ->lazy(fn() => [
