@@ -1,7 +1,11 @@
 <?php
 use function Livewire\Volt\layout;
 use function Livewire\Volt\state;
+
+// CAMBIO CRÍTICO:
+// La ruta al layout es 'layouts.app', no 'components.layouts.app'
 layout('layouts.app');
+
 state(['module_name']);
 ?>
 
