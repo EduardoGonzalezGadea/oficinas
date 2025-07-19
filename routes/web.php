@@ -7,7 +7,7 @@ Route::view('/', 'welcome');
 
 Route::middleware(['auth'])->group(function () {
     // Esto ya funciona. Llama a 'panel-principal'.
-    Volt::route('panel', 'panel-principal')->name('dashboard');
+    Volt::route('panel', 'panel-principal')->name('panel');
 
     // CAMBIO: Apuntamos la ruta '/perfil' al componente 'profile'.
     Volt::route('perfil', 'profile')->name('profile');
