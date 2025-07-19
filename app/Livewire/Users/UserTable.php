@@ -19,13 +19,13 @@ class UserTable extends DataTableComponent
         return config('app.url');
     }
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->setTableAttributes([
-            'data-asset-url' => config('app.url'),
+            'data-asset-prefix' => url('/vendor/livewire-tables')
         ]);
     }
-
+    
     public function query()
     {
         return User::with('roles');

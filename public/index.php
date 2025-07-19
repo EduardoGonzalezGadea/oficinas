@@ -2,6 +2,10 @@
 
 use Illuminate\Http\Request;
 
+$_SERVER['SCRIPT_NAME'] = '/oficinas/public/index.php';
+$_SERVER['SCRIPT_FILENAME'] = __FILE__;
+$_SERVER['PHP_SELF'] = '/oficinas/public/index.php';
+
 define('LARAVEL_START', microtime(true));
 
 // Determine if the application is in maintenance mode...
