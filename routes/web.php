@@ -6,11 +6,11 @@ use Livewire\Volt\Volt;
 Route::view('/', 'welcome');
 
 Route::middleware(['auth'])->group(function () {
-    // CAMBIO: La ruta del panel vuelve a ser un Route::view.
-    // Le decimos: "Para la URL '/panel', muestra la vista 'dashboard'".
-    Route::view('panel', 'dashboard')->name('dashboard');
+    // CAMBIO: Apuntamos la ruta '/panel' al nuevo componente 'panel-principal'.
+    // Mantenemos el nombre de la ruta como 'dashboard' para que las redirecciones sigan funcionando.
+    Volt::route('panel', 'panel-principal')->name('dashboard');
 
-    // Las rutas de perfil y módulos SÍ son componentes de Volt y se quedan como están.
+    // Las otras rutas se quedan como están.
     Volt::route('perfil', 'profile')->name('profile');
 
     $modules = config('modules', []);
