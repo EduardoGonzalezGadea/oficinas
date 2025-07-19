@@ -12,6 +12,20 @@ class UserTable extends DataTableComponent
 {
     protected $model = User::class;
 
+    protected $listeners = ['delete-user' => 'deleteUser'];
+
+    protected static function getAssetBaseUrl()
+    {
+        return config('app.url');
+    }
+
+    public function setUp(): void
+    {
+        $this->setTableAttributes([
+            'data-asset-url' => config('app.url'),
+        ]);
+    }
+
     public function query()
     {
         return User::with('roles');
@@ -63,5 +77,31 @@ class UserTable extends DataTableComponent
                     $builder->whereHas('roles', fn($query) => $query->where('name', $value));
                 }),
         ];
+    }
+
+    public function deleteUser($userId)
+    {
+        if ($userId == 1) {
+            $this->dispatch('notify', [
+                'type' => 'error',
+                'message' => 'No puedes eliminar al administrador principal'
+            ]);
+            return;
+        }
+        
+        try {
+            User::findOrFail($userId)->delete();
+            $this->dispatch(
+                'notify',
+                type: 'success',
+                message: 'Usuario eliminado correctamente'
+            );
+        } catch (\Exception $e) {
+            $this->dispatch(
+                'notify',
+                type: 'error',
+                message: 'Error al eliminar usuario: ' . $e->getMessage()
+            );
+        }
     }
 }
