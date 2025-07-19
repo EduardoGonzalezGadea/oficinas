@@ -33,6 +33,6 @@ return [
     ],
     'asesoria_contable' => [
         'name' => 'Asesoría Contable',
-        'display_name' => 'Ases. Contab.',
+        'display_name' => 'Ases. Contable',
     ],
 ];
