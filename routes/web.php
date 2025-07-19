@@ -6,13 +6,13 @@ use Livewire\Volt\Volt;
 Route::view('/', 'welcome');
 
 Route::middleware(['auth'])->group(function () {
-    // Volt buscará 'dashboard' en livewire/pages/dashboard.blade.php
-    Volt::route('panel', 'dashboard')->name('dashboard');
+    // CAMBIO: La ruta del panel vuelve a ser un Route::view.
+    // Le decimos: "Para la URL '/panel', muestra la vista 'dashboard'".
+    Route::view('panel', 'dashboard')->name('dashboard');
 
-    // Volt buscará 'profile' en livewire/pages/profile.blade.php
+    // Las rutas de perfil y módulos SÍ son componentes de Volt y se quedan como están.
     Volt::route('perfil', 'profile')->name('profile');
 
-    // Volt buscará 'modules.index' en livewire/pages/modules/index.blade.php
     $modules = config('modules', []);
     foreach ($modules as $key => $details) {
         Volt::route($key, 'modules.index')
